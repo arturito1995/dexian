@@ -1,8 +1,8 @@
 {
-  "name": "smart-plus-api",
+  "name": "api",
   "version": "0.1.0",
   "bin": {
-    "smart-plus-api": "bin/smart-plus-api.js"
+    "api": "bin/api.js"
   },
   "scripts": {
     "build": "tsc",
