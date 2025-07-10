@@ -36,6 +36,6 @@ jobs:
 
       - name: Deploy to Amplify
         if: env.BUILD_WEBHOOK != '' && github.ref == 'refs/heads/main'
-        run: npx amplify publish --yes --webhook-url ${{ secrets.AMPLIFY_WEBHOOK_URL }}
+        run: curl -X POST -d {} "${{ env.BUILD_WEBHOOK }}" -H "Content-Type:application/json"
         env:
           BUILD_WEBHOOK: ${{ secrets.AMPLIFY_WEBHOOK_URL }}
