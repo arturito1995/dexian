@@ -9,6 +9,8 @@ const REPOSITORY_NAME = "https://github.com/arturito1995/dexian";
 const ACCESS_TOKEN = `{{resolve:secretsmanager:gh-token}}`;
 const API_URL = "https://rj8s65yogb.execute-api.sa-east-1.amazonaws.com/prod/";
 
+//test client cdk deploy
+
 export class ClientStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
