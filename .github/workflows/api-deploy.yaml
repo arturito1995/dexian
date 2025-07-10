@@ -32,6 +32,9 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Install layer dependencies
+        run: cd lib/layer/nodejs && npm install
+
       - name: Deploy CDK (API stack)
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
