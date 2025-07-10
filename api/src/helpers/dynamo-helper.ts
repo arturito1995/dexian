@@ -2,8 +2,6 @@ import * as dynamodb from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { randomUUID } from "crypto";
 
-// test comment
-
 interface QueryProps {
   value: string;
   from?: string;
