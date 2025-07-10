@@ -1,0 +1,34 @@
+name: Deploy Client CDK (Amplify)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "client/cdk/**"
+  workflow_dispatch:
+
+jobs:
+  deploy_cdk_amplify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client/cdk
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.19
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy CDK (Amplify)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "sa-east-1"
+        run: npx cdk deploy client --require-approval never

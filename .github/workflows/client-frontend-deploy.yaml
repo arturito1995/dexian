@@ -1,0 +1,41 @@
+name: Deploy Client Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "client/**"
+      - "!client/cdk/**"
+  workflow_dispatch:
+
+jobs:
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.19
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build React App
+        working-directory: client
+        run: npm run build
+
+      - name: Run tests (Vitest)
+        run: npm run test
+
+      - name: Deploy to Amplify
+        if: env.BUILD_WEBHOOK != '' && github.ref == 'refs/heads/main'
+        run: npx amplify publish --yes --webhook-url ${{ secrets.AMPLIFY_WEBHOOK_URL }}
+        env:
+          BUILD_WEBHOOK: ${{ secrets.AMPLIFY_WEBHOOK_URL }}
