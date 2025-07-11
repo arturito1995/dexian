@@ -23,6 +23,7 @@ export class ApiStack extends cdk.Stack {
     carsTable.grantReadData(lambdas.getManyCars);
     carsTable.grantReadData(lambdas.getOneCar);
     carsTable.grantReadWriteData(lambdas.registerCar);
+    carsTable.grantReadWriteData(lambdas.deleteCar);
 
     const api = new apigateway.RestApi(this, "rest-api", {
       defaultCorsPreflightOptions: {
