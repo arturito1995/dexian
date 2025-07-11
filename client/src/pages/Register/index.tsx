@@ -39,7 +39,6 @@ export const Register = () => {
     } catch (error) {
       alert("Error registering vehicle: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
-      setIsSubmitting(false);
       navigate("/");
     }
   };
