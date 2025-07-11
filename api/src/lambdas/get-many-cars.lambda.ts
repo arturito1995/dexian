@@ -3,12 +3,12 @@ import { HttpStatusCodes } from "../enums";
 import { DEFAULT_LAMBDA_HEADERS } from "../constants";
 import { DynamoHelper } from "../helpers/dynamo-helper";
 
-const dynamoHelper = new DynamoHelper<CarModel>();
+const dynamoHelper = new DynamoHelper<CarModel>({ tableName: "cars-table" });
 
 class GetManyCarsLambda {
   public handler = async (): Promise<APIGatewayProxyResult> => {
     try {
-      const result = await dynamoHelper.queryMany({ tableName: "cars-table" });
+      const result = await dynamoHelper.queryMany({});
 
       return {
         statusCode: HttpStatusCodes.OK,

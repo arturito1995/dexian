@@ -2,6 +2,10 @@ import * as dynamodb from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { randomUUID } from "crypto";
 
+interface DynamoHelperProps {
+  tableName: string;
+}
+
 interface QueryProps {
   value: string;
   from?: string;
@@ -9,7 +13,6 @@ interface QueryProps {
 }
 
 interface TableOptions<T> {
-  tableName: string;
   searchBy?: keyof T;
   limit?: number;
 }
@@ -18,18 +21,20 @@ const DEFAULT_QUERY_SIZE = 20;
 
 export class DynamoHelper<T> {
   private readonly client: dynamodb.DynamoDBClient;
+  private tableName: string;
 
-  constructor() {
+  constructor({ tableName }: DynamoHelperProps) {
     this.client = new dynamodb.DynamoDBClient();
+    this.tableName = tableName;
   }
 
-  public queryOne = async ({ value }: QueryProps, { tableName, searchBy }: TableOptions<T>): Promise<T | undefined> => {
+  public queryOne = async ({ value }: QueryProps, options?: TableOptions<T>): Promise<T | undefined> => {
     try {
-      const field = searchBy ?? "id";
+      const field = options?.searchBy ?? "id";
 
       const cmd = new dynamodb.QueryCommand({
-        TableName: tableName,
-        IndexName: searchBy as string | undefined,
+        TableName: this.tableName,
+        IndexName: options?.searchBy as string | undefined,
         Limit: 1,
         KeyConditionExpression: `${String(field)} = :p0`,
         ExpressionAttributeValues: {
@@ -43,10 +48,10 @@ export class DynamoHelper<T> {
     }
   };
 
-  public queryMany = async ({ tableName, limit = DEFAULT_QUERY_SIZE }: TableOptions<T>): Promise<T[]> => {
+  public queryMany = async ({ limit = DEFAULT_QUERY_SIZE }: TableOptions<T>): Promise<T[]> => {
     try {
       const cmd = new dynamodb.ScanCommand({
-        TableName: tableName,
+        TableName: this.tableName,
         Limit: limit,
       });
 
@@ -56,12 +61,12 @@ export class DynamoHelper<T> {
     }
   };
 
-  public create = async (payload: T, { tableName }: TableOptions<T>): Promise<T | undefined> => {
+  public create = async (payload: T): Promise<T | undefined> => {
     try {
       const id = randomUUID();
 
       const params: dynamodb.PutItemCommandInput = {
-        TableName: tableName,
+        TableName: this.tableName,
         Item: marshall({
           id,
           ...payload,
@@ -72,9 +77,25 @@ export class DynamoHelper<T> {
 
       await this.client.send(command);
 
-      return await this.queryOne({ value: id }, { tableName });
+      return await this.queryOne({ value: id });
     } catch (error) {
       throw new Error(`Error creating item: ${error}`);
+    }
+  };
+
+  public delete = async ({ id, insertDate }: { id: string; insertDate?: string }): Promise<void> => {
+    try {
+      const keyObj = { id: { S: id }, ...(insertDate!! ? { insertDate: { S: insertDate } } : {}) };
+
+      const params: dynamodb.DeleteItemCommandInput = {
+        TableName: this.tableName,
+        Key: keyObj,
+      };
+
+      const command = new dynamodb.DeleteItemCommand(params);
+      await this.client.send(command);
+    } catch (error) {
+      throw new Error(`Error deleting item: ${error}`);
     }
   };
 

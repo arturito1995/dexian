@@ -1,29 +1,27 @@
 import { APIGatewayProxyEventBase, APIGatewayProxyResult } from "aws-lambda";
-
 import { HttpStatusCodes } from "../enums";
 import { DEFAULT_LAMBDA_HEADERS } from "../constants";
 import { DynamoHelper } from "../helpers/dynamo-helper";
 
 const dynamoHelper = new DynamoHelper<CarModel>({ tableName: "cars-table" });
 
-class GetOneCarLambda {
-  public handler = async (event: APIGatewayProxyEventBase<CarModel>): Promise<APIGatewayProxyResult> => {
+class DeleteCarLambda {
+  public handler = async (event: APIGatewayProxyEventBase<any>): Promise<APIGatewayProxyResult> => {
     try {
       const carId = event.pathParameters?.id;
 
-      if (!carId) throw new Error("Id is required");
+      if (!carId) throw new Error("Car ID is required");
 
-      const result = await dynamoHelper.queryOne({ value: carId });
+      const existingCar = await dynamoHelper.queryOne({ value: carId });
 
-      if (!result) throw new Error("Not found");
+      if (!existingCar) throw new Error("Car not found");
+
+      await dynamoHelper.delete({ id: carId });
 
       return {
-        statusCode: HttpStatusCodes.OK,
+        statusCode: HttpStatusCodes.NO_CONTENT,
         headers: DEFAULT_LAMBDA_HEADERS,
-        body: JSON.stringify({
-          car: result,
-          success: true,
-        }),
+        body: JSON.stringify({ success: true }),
       };
     } catch (error) {
       return {
@@ -35,5 +33,5 @@ class GetOneCarLambda {
   };
 }
 
-const handlerClass = new GetOneCarLambda();
+const handlerClass = new DeleteCarLambda();
 export const handler = handlerClass.handler;

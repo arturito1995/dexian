@@ -33,7 +33,7 @@ describe("GetOneCarLambda handler", () => {
       car,
       success: true,
     });
-    expect(mockQueryOne).toHaveBeenCalledWith({ value: "car-123" }, { tableName: "cars-table" });
+    expect(mockQueryOne).toHaveBeenCalledWith({ value: "car-123" });
   });
 
   it("should return 500 if id is missing", async () => {

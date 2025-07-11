@@ -16,11 +16,9 @@ const tracer = new Tracer({ serviceName });
 const metrics = new Metrics({ namespace, serviceName });
 
 const schemaValidator = new SchemaValidator();
-const dynamoHelper = new DynamoHelper<CarModel>();
+const dynamoHelper = new DynamoHelper<CarModel>({ tableName: "cars-table" });
 
 class RegisterCarLambda {
-  constructor() {}
-
   @logger.injectLambdaContext({ clearState: true })
   @tracer.captureLambdaHandler()
   @metrics.logMetrics({ captureColdStartMetric: true })
@@ -38,7 +36,7 @@ class RegisterCarLambda {
       schemaValidator.validateSchema(registerCarSchema, payload);
       logger.info("Payload validated against schema");
 
-      const result = await dynamoHelper.create(payload, { tableName: "cars-table" });
+      const result = await dynamoHelper.create(payload);
 
       metrics.addMetric("CarRegistered", MetricUnit.Count, 1);
       logger.info("Car registered successfully", { car: result });

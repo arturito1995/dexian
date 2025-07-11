@@ -15,6 +15,24 @@ export const CarProfile = () => {
 
   const handleNavigateHome = () => navigate("/");
 
+  const handleDeleteCar = async () => {
+    try {
+      setIsLoading(true);
+      if (!id) throw new Error("Car ID is required to delete");
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/cars/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete car");
+    } catch {
+      alert("Error deleting car. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      handleNavigateHome();
+    }
+  };
+
   useEffect(() => {
     if (!id) {
       setError("Car ID is required");
@@ -49,6 +67,8 @@ export const CarProfile = () => {
 
   return (
     <div className={styles.wrapper}>
+      <button onClick={handleNavigateHome}>Go back to home</button>
+      <button onClick={handleDeleteCar}>Delete car</button>
       {car ? (
         <>
           <h1>

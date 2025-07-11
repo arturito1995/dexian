@@ -37,5 +37,6 @@ export class ApiStack extends cdk.Stack {
     carsResource.addMethod("GET", new apigateway.LambdaIntegration(lambdas.getManyCars));
     carsResource.addMethod("POST", new apigateway.LambdaIntegration(lambdas.registerCar));
     idResource.addMethod("GET", new apigateway.LambdaIntegration(lambdas.getOneCar));
+    idResource.addMethod("DELETE", new apigateway.LambdaIntegration(lambdas.deleteCar));
   }
 }

@@ -14,6 +14,7 @@ export class LambdasModule extends Construct {
   public readonly registerCar: NodejsFunction;
   public readonly getManyCars: NodejsFunction;
   public readonly getOneCar: NodejsFunction;
+  public readonly deleteCar: NodejsFunction;
 
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id);
@@ -46,6 +47,7 @@ export class LambdasModule extends Construct {
     this.registerCar = this.createFunction(this, "register-car");
     this.getManyCars = this.createFunction(this, "get-many-cars");
     this.getOneCar = this.createFunction(this, "get-one-car");
+    this.deleteCar = this.createFunction(this, "delete-car");
   }
 
   public createFunction(scope: Construct, name: string, options?: NodejsFunctionProps): NodejsFunction {
