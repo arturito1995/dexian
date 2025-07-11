@@ -33,7 +33,7 @@ export const Register = () => {
 
       const result = await response.json();
 
-      if (!result.success) throw new Error(result.message || "Failed to register vehicle");
+      if (!result.success) throw new Error(result.error || "Failed to register vehicle");
 
       alert("Vehicle registered successfully!");
     } catch (error) {
