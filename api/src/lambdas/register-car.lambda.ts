@@ -27,7 +27,7 @@ class RegisterCarLambda {
   public async handler(event: APIGatewayProxyEventBase<CarModel>, context: any): Promise<APIGatewayProxyResult> {
     try {
       if (!event.body) {
-        logger.error("Request body is required!");
+        logger.error("Request body is required");
         metrics.addMetric("MissingBody", MetricUnit.Count, 1);
         throw new Error("Request body is required");
       }
