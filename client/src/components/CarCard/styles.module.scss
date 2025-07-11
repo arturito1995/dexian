@@ -11,6 +11,12 @@
   border-radius: 1rem;
   box-sizing: border-box;
 
+  h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &:hover {
     transform: scale(1.05);
   }
