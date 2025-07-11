@@ -67,8 +67,6 @@ export const CarProfile = () => {
 
   return (
     <div className={styles.wrapper}>
-      <button onClick={handleNavigateHome}>Go back to home</button>
-      <button onClick={handleDeleteCar}>Delete car</button>
       {car ? (
         <>
           <h1>
@@ -85,6 +83,7 @@ export const CarProfile = () => {
       ) : (
         <h1>No info to show</h1>
       )}
+      <button onClick={handleDeleteCar}>Delete car</button>
       <button onClick={handleNavigateHome}>Go back to home</button>
     </div>
   );

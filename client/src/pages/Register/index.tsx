@@ -17,6 +17,8 @@ export const Register = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleNavigateHome = () => navigate("/");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -39,7 +41,7 @@ export const Register = () => {
     } catch (error) {
       alert("Error registering vehicle: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
-      navigate("/");
+      handleNavigateHome();
     }
   };
 
@@ -98,6 +100,7 @@ export const Register = () => {
           </button>
         </form>
       )}
+      <button onClick={handleNavigateHome}>Go back to home</button>
     </>
   );
 };
